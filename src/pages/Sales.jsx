@@ -10,6 +10,7 @@ function Sales() {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const toastOptions = {
     autoClose: 400,
@@ -19,7 +20,7 @@ function Sales() {
   const fetchProducts = () => {
     setIsLoading(true);
     //added loader to fetch products from an api in future
-    setData(products);
+    setData(products?.products);
     setIsLoading(false);
   };
 
@@ -86,16 +87,31 @@ function Sales() {
     setTotalAmount(newTotalAmount);
   }, [cart]);
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  const filteredProducts = data?.filter((prod) => {
+    return prod.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <MainLayout>
       <div className="row">
         <div className="col-lg-8">
-          {isLoading ? (
-            "Loading"
-          ) : (
-            <div className="row">
-              {data?.products &&
-                data?.products.map((product, key) => (
+          <div className="input-group d-flex justify-content-center">
+            <div className="form-outline">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="form-control my-search-input"
+              />
+            </div>
+          </div>
+          <div className="row">
+            {filteredProducts && filteredProducts.length > 0
+              ? filteredProducts?.map((product, key) => (
                   <div key={key} className="col-lg-4 mb-4">
                     <div
                       className="sales-item px-3 text-center border"
@@ -110,9 +126,13 @@ function Sales() {
                       <p>${product.price}</p>
                     </div>
                   </div>
-                ))}
-            </div>
-          )}
+                ))
+              : !isLoading && (
+                  <h1 className="d-flex justify-content-center align-items-center text-danger">
+                    No Data Found
+                  </h1>
+                )}
+          </div>
         </div>
         <div className="col-lg-4">
           <div style={{ display: "none" }}>
