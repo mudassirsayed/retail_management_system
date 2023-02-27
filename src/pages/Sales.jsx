@@ -7,6 +7,7 @@ function Sales() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const toastOptions = {
     autoClose: 400,
@@ -18,10 +19,6 @@ function Sales() {
     setData(products);
     setIsLoading(false);
   };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const addProductToCart = async (product) => {
     // check if the adding product exist
@@ -58,6 +55,23 @@ function Sales() {
       toast(`Added ${product.name} to cart`, toastOptions);
     }
   };
+
+  const removeProduct = async (product) => {
+    const newCart = cart.filter((cartItem) => cartItem.id !== product.id);
+    setCart(newCart);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    let newTotalAmount = 0;
+    cart.forEach((icart) => {
+      newTotalAmount = newTotalAmount + parseInt(icart.totalAmount);
+    });
+    setTotalAmount(newTotalAmount);
+  }, [cart]);
 
   return (
     <MainLayout>
@@ -110,7 +124,10 @@ function Sales() {
                         <td>{cartProduct.quantity}</td>
                         <td>{cartProduct.totalAmount}</td>
                         <td>
-                          <button className="btn btn-danger btn-sm">
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => removeProduct(cartProduct)}
+                          >
                             Remove
                           </button>
                         </td>
@@ -119,6 +136,7 @@ function Sales() {
                   : "No Item in Cart"}
               </tbody>
             </table>
+            <h2 className="px-2 text-white">Total Amount: ${totalAmount}</h2>
           </div>
         </div>
       </div>
