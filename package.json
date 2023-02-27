@@ -1,8 +1,8 @@
 {
   "name": "retail-management-system",
   "version": "0.1.0",
-  "homepage": "https://mudassirsayed.github.io/retail_management_system",
   "private": true,
+  "homepage": "https://mudassirsayed.github.io/retail_management_system",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -21,6 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
