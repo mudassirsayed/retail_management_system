@@ -11,6 +11,9 @@ function Sales() {
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newImage, setNewImage] = useState("");
+  const [newPrice, setNewPrice] = useState("");
 
   const toastOptions = {
     autoClose: 400,
@@ -94,6 +97,22 @@ function Sales() {
     return prod.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  const handleAddNewTask = () => {
+    setData([
+      ...data,
+      {
+        id: Date.now(),
+        name: newName,
+        image: newImage,
+        price: newPrice,
+      },
+    ]);
+
+    // Empty the value of the Textbox
+    setNewName("");
+    setNewImage("");
+    setNewPrice("");
+  };
   return (
     <MainLayout>
       <div className="row">
@@ -189,6 +208,36 @@ function Sales() {
             ) : (
               "Please add a product to the cart"
             )}
+          </div>
+          <div className="row mt-3">
+            <div className="col-lg-12">
+              <input
+                className="form-control mt-3"
+                type="text"
+                placeholder="Enter the product name"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+              />
+              <input
+                className="form-control mt-3"
+                type="text"
+                placeholder="Paste the image link"
+                value={newImage}
+                onChange={(e) => setNewImage(e.target.value)}
+              />
+              <input
+                className="form-control mt-3"
+                type="number"
+                placeholder="Enter the product price"
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
+              />
+            </div>
+            <div className="col-lg-4 mt-3">
+              <button onClick={handleAddNewTask} className="btn btn-primary">
+                Add
+              </button>
+            </div>
           </div>
         </div>
       </div>
