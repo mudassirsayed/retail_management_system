@@ -97,7 +97,7 @@ function Sales() {
                 data?.products.map((product, key) => (
                   <div key={key} className="col-lg-4 mb-4">
                     <div
-                      className="pos-item px-3 text-center border"
+                      className="sales-item px-3 text-center border"
                       onClick={() => addProductToCart(product)}
                     >
                       <p>{product.name}</p>
