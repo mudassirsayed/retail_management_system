@@ -1,8 +1,8 @@
 {
   "name": "retail-management-system",
   "version": "0.1.0",
-  "private": true,
   "homepage": "https://mudassirsayed.github.io/retail_management_system",
+  "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
