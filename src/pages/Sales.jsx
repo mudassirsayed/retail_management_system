@@ -18,6 +18,7 @@ function Sales() {
 
   const fetchProducts = () => {
     setIsLoading(true);
+    //added loader to fetch products from an api in future
     setData(products);
     setIsLoading(false);
   };
