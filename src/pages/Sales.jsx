@@ -12,8 +12,9 @@ function Sales() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [newName, setNewName] = useState("");
-  const [newImage, setNewImage] = useState("");
+  const [newImage, setNewImage] = useState(null);
   const [newPrice, setNewPrice] = useState("");
+  const inputImageRef = useRef(null);
 
   const toastOptions = {
     autoClose: 400,
@@ -103,7 +104,7 @@ function Sales() {
       {
         id: Date.now(),
         name: newName,
-        image: newImage,
+        image: imageUrl ? imageUrl : newImage,
         price: newPrice,
       },
     ]);
@@ -111,8 +112,15 @@ function Sales() {
     // Empty the value of the Textbox
     setNewName("");
     setNewImage("");
+    inputImageRef.current.value = "";
     setNewPrice("");
   };
+
+  const handleImage = (e) => {
+    const fileImage = e.target.files[0];
+    setNewImage(fileImage);
+  };
+  const imageUrl = newImage ? URL.createObjectURL(newImage) : null;
   return (
     <MainLayout>
       <div className="row">
@@ -147,7 +155,10 @@ function Sales() {
                   </div>
                 ))
               : !isLoading && (
-                  <h1 className="d-flex justify-content-center align-items-center text-danger">
+                  <h1
+                    className="d-flex justify-content-center align-items-center text-danger"
+                    style={{ minHeight: "50vh" }}
+                  >
                     No Data Found
                   </h1>
                 )}
@@ -174,25 +185,27 @@ function Sales() {
                 </tr>
               </thead>
               <tbody>
-                {cart
-                  ? cart?.map((cartProduct, key) => (
-                      <tr key={key}>
-                        <td>{cartProduct.id}</td>
-                        <td>{cartProduct.name}</td>
-                        <td>{cartProduct.price}</td>
-                        <td>{cartProduct.quantity}</td>
-                        <td>{cartProduct.totalAmount}</td>
-                        <td>
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => removeProduct(cartProduct)}
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  : "No Item in Cart"}
+                {cart.length > 0 ? (
+                  cart?.map((cartProduct, key) => (
+                    <tr key={key}>
+                      <td>{cartProduct.id}</td>
+                      <td>{cartProduct.name}</td>
+                      <td>{cartProduct.price}</td>
+                      <td>{cartProduct.quantity}</td>
+                      <td>{cartProduct.totalAmount}</td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => removeProduct(cartProduct)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <p>No Item in Cart</p>
+                )}
               </tbody>
             </table>
             <h2 className="px-2 text-white">Total Amount: ${totalAmount}</h2>
@@ -220,11 +233,12 @@ function Sales() {
               />
               <input
                 className="form-control mt-3"
-                type="text"
-                placeholder="Paste the image link"
-                value={newImage}
-                onChange={(e) => setNewImage(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                ref={inputImageRef}
               />
+              {imageUrl && <img src={imageUrl} alt="Selected file" />}
               <input
                 className="form-control mt-3"
                 type="number"
@@ -235,7 +249,7 @@ function Sales() {
             </div>
             <div className="col-lg-4 mt-3">
               <button onClick={handleAddNewTask} className="btn btn-primary">
-                Add
+                Add Product
               </button>
             </div>
           </div>
