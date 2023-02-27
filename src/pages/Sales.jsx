@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
 import products from "../db.json";
 import MainLayout from "../layouts/MainLayout";
+import { toast } from "react-toastify";
 
 function Sales() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [cart, setCart] = useState([]);
+
+  const toastOptions = {
+    autoClose: 400,
+    pauseOnHover: true,
+  };
+
   const fetchProducts = () => {
     setIsLoading(true);
     setData(products);
     setIsLoading(false);
   };
-  console.log(data?.products);
+
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const addProductToCart = async (product) => {
+    let addingProduct = {
+      ...product,
+      quantity: 1,
+      totalAmount: product.price,
+    };
+    setCart([...cart, addingProduct]);
+    toast(`Added ${product.name} to cart`, toastOptions);
+  };
+
+  console.log(cart);
+
   return (
     <MainLayout>
       <div className="row">
@@ -23,9 +44,12 @@ function Sales() {
           ) : (
             <div className="row">
               {data?.products &&
-                data?.products?.map((product, key) => (
+                data?.products.map((product, key) => (
                   <div key={key} className="col-lg-4 mb-4">
-                    <div className="pos-item px-3 text-center border">
+                    <div
+                      className="pos-item px-3 text-center border"
+                      onClick={() => addProductToCart(product)}
+                    >
                       <p>{product.name}</p>
                       <img
                         src={product.image}
@@ -38,6 +62,40 @@ function Sales() {
                 ))}
             </div>
           )}
+        </div>
+        <div className="col-lg-4">
+          <div className="table-responsive bg-dark">
+            <table className="table table-responsive table-dark table-hover">
+              <thead>
+                <tr>
+                  <td>#</td>
+                  <td>Name</td>
+                  <td>Price</td>
+                  <td>Qty</td>
+                  <td>Total</td>
+                  <td>Action</td>
+                </tr>
+              </thead>
+              <tbody>
+                {cart
+                  ? cart?.map((cartProduct, key) => (
+                      <tr key={key}>
+                        <td>{cartProduct.id}</td>
+                        <td>{cartProduct.name}</td>
+                        <td>{cartProduct.price}</td>
+                        <td>{cartProduct.quantity}</td>
+                        <td>{cartProduct.totalAmount}</td>
+                        <td>
+                          <button className="btn btn-danger btn-sm">
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  : "No Item in Cart"}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </MainLayout>
