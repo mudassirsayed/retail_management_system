@@ -120,7 +120,17 @@ function Sales() {
     const fileImage = e.target.files[0];
     setNewImage(fileImage);
   };
+
   const imageUrl = newImage ? URL.createObjectURL(newImage) : null;
+
+  const deleteProduct = (product) => {
+    const removePro = data?.filter((a) => a.id !== product.id);
+    if (removePro) {
+      alert("Are you sure you want to delete a product?");
+      setData(removePro);
+    }
+  };
+
   return (
     <MainLayout>
       <div className="row">
@@ -151,6 +161,14 @@ function Sales() {
                         alt={product.name}
                       />
                       <p>${product.price}</p>
+                    </div>
+                    <div className="d-flex justify-content-center m-2">
+                      <button
+                        className="bg-danger text-light"
+                        onClick={() => deleteProduct(product)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))
