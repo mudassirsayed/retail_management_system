@@ -14,6 +14,7 @@ function Sales() {
   const [newName, setNewName] = useState("");
   const [newImage, setNewImage] = useState(null);
   const [newPrice, setNewPrice] = useState("");
+  const [editFlag, setEditFlag] = useState(false);
   const inputImageRef = useRef(null);
 
   const toastOptions = {
@@ -114,6 +115,7 @@ function Sales() {
     setNewImage("");
     inputImageRef.current.value = "";
     setNewPrice("");
+    toast(`Added ${newName} to the list`, toastOptions);
   };
 
   const handleImage = (e) => {
@@ -129,6 +131,38 @@ function Sales() {
       alert("Are you sure you want to delete a product?");
       setData(removePro);
     }
+    toast(`Deleted ${product.name} from the list`, toastOptions);
+  };
+
+  const editProduct = (product) => {
+    const editPro = data?.find((a) => a.id === product.id);
+    console.log(editPro);
+    if (editPro) {
+      setEditFlag(true);
+      setNewName(product.name);
+      setNewPrice(product.price);
+    }
+  };
+
+  const handleEditTask = (product) => {
+    const index = data.findIndex((p) => p.id === product.id);
+
+    const updatedProduct = {
+      ...data[index],
+      name: newName,
+      image: imageUrl ? imageUrl : newImage,
+      price: newPrice,
+    };
+    const newData = [...data];
+    newData.splice(index, 1, updatedProduct);
+    setData(newData);
+    setEditFlag(false);
+    console.log(index, updatedProduct, newData);
+    // Empty the value of the Textbox
+    setNewName("");
+    setNewImage("");
+    inputImageRef.current.value = "";
+    setNewPrice("");
   };
 
   return (
@@ -163,6 +197,12 @@ function Sales() {
                       <p>${product.price}</p>
                     </div>
                     <div className="d-flex justify-content-center m-2">
+                      <button
+                        className="bg-danger text-light"
+                        onClick={() => editProduct(product)}
+                      >
+                        Edit
+                      </button>
                       <button
                         className="bg-danger text-light"
                         onClick={() => deleteProduct(product)}
@@ -266,9 +306,15 @@ function Sales() {
               />
             </div>
             <div className="col-lg-4 mt-3">
-              <button onClick={handleAddNewTask} className="btn btn-primary">
-                Add Product
-              </button>
+              {editFlag ? (
+                <button onClick={handleEditTask} className="btn btn-primary">
+                  Edit Product
+                </button>
+              ) : (
+                <button onClick={handleAddNewTask} className="btn btn-primary">
+                  Add Product
+                </button>
+              )}
             </div>
           </div>
         </div>
